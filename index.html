@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع أحمد بشار عقيل — دراسة التآكل</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: #0a0e1a;
+  color: #f1f5f9;
+  direction: rtl;
+  min-height: 100vh;
+}
+
+/* ── GLOW ─────────────────── */
+.glow-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(245,158,11,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(16,185,129,.06) 0%, transparent 60%);
+}
+
+.wrap { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 16px; }
+
+/* ── HERO ─────────────────── */
+.hero { text-align:center; padding:50px 16px 30px; }
+
+.badge {
+  display:inline-block;
+  background:rgba(245,158,11,.15);
+  border:1px solid rgba(245,158,11,.4);
+  color:#f59e0b; padding:6px 24px;
+  border-radius:50px; font-size:13px; font-weight:700;
+  margin-bottom:20px;
+}
+
+.hero h1 {
+  font-size:clamp(22px,4vw,44px); font-weight:900;
+  line-height:1.3; margin-bottom:14px;
+  background:linear-gradient(135deg,#fff 0%,#f59e0b 50%,#10b981 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero p { color:#94a3b8; font-size:14px; line-height:1.8; margin-bottom:22px; }
+
+.student-chip {
+  display:inline-flex; align-items:center; gap:12px;
+  background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(16,185,129,.08));
+  border:1px solid rgba(245,158,11,.35);
+  border-radius:14px; padding:12px 26px; margin-bottom:24px;
+}
+.student-chip .lbl { font-size:10px; color:#94a3b8; margin-bottom:3px; }
+.student-chip .name {
+  font-size:20px; font-weight:900;
+  background:linear-gradient(135deg,#f59e0b,#10b981);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── STATS ────────────────── */
+.stats { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+.stat {
+  background:#111827; border:1px solid #1e293b;
+  border-radius:11px; padding:10px 18px; text-align:center;
+}
+.stat .v { font-size:18px; font-weight:900; color:#f59e0b; }
+.stat .l { font-size:10px; color:#94a3b8; margin-top:2px; }
+
+/* ── TABS ─────────────────── */
+.tabs {
+  display:flex; gap:8px; flex-wrap:wrap;
+  justify-content:center; margin:28px 0 22px;
+}
+.tab {
+  padding:9px 18px; border-radius:10px; cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:700;
+  border:1px solid #1e293b; background:#111827; color:#94a3b8;
+  transition:all .2s;
+}
+.tab:hover { border-color:#f59e0b; color:#f59e0b; }
+.tab.active {
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  border-color:#f59e0b; color:#000;
+}
+
+/* ── SECTION ──────────────── */
+.section { display:none; padding-bottom:60px; }
+.section.active { display:block; }
+
+/* ── CARD ─────────────────── */
+.card {
+  background:#1a2235; border:1px solid #1e293b;
+  border-radius:14px; padding:18px 20px; margin-bottom:16px;
+}
+.card.amber { border-color:rgba(245,158,11,.4); }
+.card.green  { border-color:rgba(16,185,129,.4); }
+.card.blue   { border-color:rgba(59,130,246,.4); }
+.card.red    { border-color:rgba(239,68,68,.4); }
+.card.purple { border-color:rgba(139,92,246,.4); }
+
+.card-title { font-size:14px; font-weight:700; margin-bottom:12px; }
+.amber-t { color:#f59e0b; }
+.green-t  { color:#10b981; }
+.blue-t   { color:#3b82f6; }
+.red-t    { color:#ef4444; }
+.purple-t { color:#a78bfa; }
+
+/* ── GRID 2 ───────────────── */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:600px){ .g2 { grid-template-columns:1fr; } }
+
+/* ── TABLE ────────────────── */
+.tbl { width:100%; border-collapse:collapse; font-size:12px; }
+.tbl th {
+  background:#111827; padding:9px 12px; text-align:right;
+  color:#f59e0b; font-weight:700; border-bottom:2px solid #1e293b;
+}
+.tbl td { padding:8px 12px; border-bottom:1px solid #1e293b; color:#94a3b8; text-align:right; }
+.tbl tr:nth-child(even) td { background:rgba(255,255,255,.02); }
+
+/* ── FORMULA ──────────────── */
+.formula {
+  background:rgba(245,158,11,.07); border:1.5px solid rgba(245,158,11,.35);
+  border-radius:12px; padding:16px; text-align:center;
+  direction:ltr; margin:12px 0;
+}
+.formula .f { font-size:16px; color:#f59e0b; font-weight:700; font-family:monospace; margin-bottom:8px; }
+.formula .fd { font-size:11px; color:#94a3b8; direction:rtl; font-family:inherit; }
+
+/* ── INFO / WARN ──────────── */
+.info-box {
+  background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.3);
+  border-radius:10px; padding:12px 16px; margin:10px 0;
+  color:#93c5fd; font-size:12px; line-height:1.8;
+}
+.warn-box {
+  background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.3);
+  border-radius:10px; padding:14px 18px; margin:10px 0;
+}
+.warn-box .wt { color:#ef4444; font-weight:700; font-size:13px; margin-bottom:8px; }
+.warn-box p   { color:#fca5a5; font-size:12px; line-height:1.9; }
+
+/* ── STEP ─────────────────── */
+.step {
+  display:flex; gap:14px; align-items:flex-start;
+  padding:12px 14px; background:#111827;
+  border-radius:10px; margin-bottom:10px;
+  border:1px solid #1e293b; cursor:pointer; transition:all .2s;
+}
+.step.done { border-color:rgba(16,185,129,.5); background:rgba(16,185,129,.05); }
+.step-num {
+  width:34px; height:34px; border-radius:50%;
+  background:#f59e0b; color:#000;
+  font-weight:900; font-size:14px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.step.done .step-num { background:#10b981; color:#fff; }
+.step h4 { font-size:13px; font-weight:700; color:#f1f5f9; margin-bottom:4px; }
+.step p  { font-size:11px; color:#94a3b8; line-height:1.7; }
+
+/* ── PROGRESS ─────────────── */
+.prog-wrap { background:#1e293b; border-radius:50px; height:8px; overflow:hidden; margin-top:6px; }
+.prog-fill {
+  height:100%; border-radius:50px;
+  background:linear-gradient(90deg,#f59e0b,#10b981);
+  transition:width .4s;
+}
+
+/* ── INPUT / SELECT ───────── */
+.inp-group { margin-bottom:12px; }
+.inp-group label { display:block; font-size:11px; color:#94a3b8; margin-bottom:5px; font-weight:600; }
+.inp-group input,
+.inp-group select {
+  width:100%; background:#111827; border:1px solid #1e293b;
+  color:#f1f5f9; padding:9px 12px; border-radius:9px;
+  font-family:inherit; font-size:13px; outline:none;
+  transition:border-color .2s;
+}
+.inp-group input:focus,
+.inp-group select:focus { border-color:#f59e0b; }
+
+/* ── BUTTON ───────────────── */
+.btn-amber {
+  padding:11px 24px; border-radius:10px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#000; font-family:inherit; font-size:14px; font-weight:700;
+  transition:opacity .2s;
+}
+.btn-amber:hover { opacity:.88; }
+.btn-green {
+  padding:11px 22px; border-radius:10px; border:none; cursor:pointer;
+  background:#10b981; color:#fff;
+  font-family:inherit; font-size:14px; font-weight:700;
+}
+.btn-red {
+  padding:8px 16px; border-radius:8px; cursor:pointer;
+  background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3);
+  color:#ef4444; font-family:inherit; font-size:12px; margin-top:10px;
+}
+
+/* ── RESULT ROW ───────────── */
+.res-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 14px; background:#111827;
+  border-radius:9px; margin-bottom:8px;
+}
+.res-row .rl { font-size:12px; color:#94a3b8; }
+.res-row .rv { font-size:13px; font-weight:700; }
+
+/* ── BAR CHART ────────────── */
+.chart-bars { display:flex; align-items:flex-end; gap:8px; height:140px; justify-content:center; padding-top:8px; }
+.bar-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar-col .bv { font-size:10px; font-weight:700; }
+.bar-rect { width:30px; border-radius:5px 5px 0 0; transition:height .5s; }
+.bar-col .bl { font-size:9px; color:#94a3b8; text-align:center; line-height:1.3; white-space:pre-line; }
+
+/* ── REPORT BLOCK ─────────── */
+.rep-block {
+  border-right:3px solid #f59e0b;
+  padding:10px 16px; margin-bottom:10px;
+  background:#111827; border-radius:0 10px 10px 0;
+}
+.rep-block h4 { font-size:12px; font-weight:700; color:#f59e0b; margin-bottom:5px; }
+.rep-block p  { font-size:11px; color:#94a3b8; line-height:1.7; }
+
+/* ── CLASS GRID ───────────── */
+.cls-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media(max-width:500px){ .cls-grid { grid-template-columns:repeat(2,1fr); } }
+.cls-item { background:#111827; border-radius:10px; padding:12px 8px; text-align:center; border:1px solid; }
+.cls-item .cv { font-weight:700; font-size:12px; margin-bottom:3px; }
+.cls-item .cr { font-size:10px; margin-bottom:3px; }
+.cls-item .cd { font-size:10px; color:#94a3b8; }
+
+/* ── MATERIAL CARDS ───────── */
+.mat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+@media(max-width:480px){ .mat-grid { grid-template-columns:1fr; } }
+.mat-card { background:#111827; border:1px solid #1e293b; border-radius:10px; padding:14px; text-align:center; }
+.mat-card .mn { font-weight:700; font-size:13px; margin-bottom:3px; }
+.mat-card .mt { font-size:10px; color:#94a3b8; margin-bottom:6px; }
+.mat-card .md { font-size:10px; }
+
+/* ── FOOTER ───────────────── */
+.footer {
+  text-align:center; padding:24px 16px;
+  border-top:1px solid #1e293b;
+  color:#64748b; font-size:12px;
+}
+
+/* ── CONCL GRID ───────────── */
+.concl-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media(max-width:480px){ .concl-grid { grid-template-columns:1fr; } }
+.concl-item { background:#111827; border-radius:10px; padding:12px 14px; border:1px solid; }
+.concl-item .ci { font-weight:700; font-size:12px; margin-bottom:4px; }
+.concl-item .cr2 { font-size:11px; color:#94a3b8; }
+
+/* ── SAVED TABLE ──────────── */
+#saved-body tr { transition:background .15s; }
+#saved-body tr:hover td { color:#f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<div class="wrap">
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="hero">
+    <div class="badge">🔬 مشروع هندسة كيمياوية</div>
+    <h1>دراسة التآكل وتطوير<br>الطلاء الواقي للمعادن</h1>
+    <p>مشروع تطبيقي متكامل باستخدام الـ Micrometer بدقة 0.001mm</p>
+
+    <div class="student-chip">
+      <span style="font-size:22px">👨‍🔬</span>
+      <div>
+        <div class="lbl">إعداد الطالب</div>
+        <div class="name">أحمد بشار عقيل</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">3</div><div class="l">معادن</div></div>
+      <div class="stat"><div class="v">4</div><div class="l">محاليل</div></div>
+      <div class="stat"><div class="v">72h</div><div class="l">مدة التجربة</div></div>
+      <div class="stat"><div class="v">0.001mm</div><div class="l">دقة القياس</div></div>
+      <div class="stat"><div class="v">4</div><div class="l">أنواع طلاء</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TABS ═══════════════ -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview',this)">📋 نظرة عامة</button>
+    <button class="tab" onclick="showTab('materials',this)">🧪 المواد</button>
+    <button class="tab" onclick="showTab('steps',this)">📝 الخطوات</button>
+    <button class="tab" onclick="showTab('calc',this)">📏 الحاسبة</button>
+    <button class="tab" onclick="showTab('results',this)">📊 النتائج</button>
+    <button class="tab" onclick="showTab('report',this)">📄 التقرير</button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 1 – OVERVIEW
+  ══════════════════════════════════════ -->
+  <div id="tab-overview" class="section active">
+
+    <div class="card amber">
+      <div class="card-title amber-t">🎯 هدف المشروع</div>
+      <p style="color:#94a3b8;line-height:1.9;font-size:13px;">
+        دراسة معدل التآكل في ثلاثة معادن (حديد، نحاس، ألمنيوم) عند تعريضها لأربعة محاليل كيمياوية
+        (حمضي، قاعدي، ملحي، مقطر)، مع تطوير وتقييم طلاءات واقية. يُستخدم الـ Micrometer
+        بدقة 0.001mm لقياس السُمك قبل وبعد التجربة.
+      </p>
+    </div>
+
+    <div class="g2">
+      <div class="card green">
+        <div class="card-title green-t">✅ أهمية المشروع</div>
+        <ul style="list-style:none;color:#94a3b8;font-size:12px;line-height:2.2;">
+          <li>◆ مشكلة حقيقية في صناعة النفط العراقية</li>
+          <li>◆ توفير ملايين الدولارات في الصيانة</li>
+          <li>◆ حماية البيئة من التسربات</li>
+          <li>◆ تطبيق عملي لمواد الهندسة الكيمياوية</li>
+          <li>◆ بيانات قابلة للتحليل الإحصائي</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <div class="card-title blue-t">📐 المتغيرات</div>
+        <table class="tbl">
+          <tr><td style="color:#f59e0b;font-weight:700;border:none;font-size:12px;">المستقل:</td><td style="border:none;font-size:12px;">نوع المعدن + المحلول</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;border:none;font-size:12px;">التابع:</td><td style="border:none;font-size:12px;">سُمك العينة (mm)</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;border:none;font-size:12px;">المحسوب:</td><td style="border:none;font-size:12px;">معدل التآكل (mm/year)</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;border:none;font-size:12px;">الضابط:</td><td style="border:none;font-size:12px;">درجة الحرارة، الزمن</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;border:none;font-size:12px;">القياس:</td><td style="border:none;font-size:12px;">Micrometer ±0.001mm</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="formula">
+      <div class="f">CR (mm/year) = (T₀ − Tₙ) ÷ t × 8760</div>
+      <div class="fd">حيث: T₀ = السُمك الأولي | Tₙ = السُمك النهائي | t = الزمن بالساعات | 8760 = ساعات السنة</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title amber-t">📊 معدلات التآكل المتوقعة (mm/year)</div>
+      <div class="chart-bars" id="barchart"></div>
+      <div style="display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
+        <span style="font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block;"></span>HCl حمضي</span>
+        <span style="font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>NaCl ملحي</span>
+        <span style="font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block;"></span>NaOH قاعدي</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 2 – MATERIALS
+  ══════════════════════════════════════ -->
+  <div id="tab-materials" class="section">
+
+    <div class="card blue">
+      <div class="card-title blue-t">🔩 العينات المعدنية</div>
+      <div class="mat-grid">
+        <div class="mat-card" style="border-color:rgba(239,68,68,.4)">
+          <div class="mn" style="color:#f87171;">حديد (Fe)</div>
+          <div class="mt">Carbon Steel</div>
+          <div class="md" style="color:#f59e0b;">الأكثر شيوعاً في الصناعة</div>
+        </div>
+        <div class="mat-card" style="border-color:rgba(245,158,11,.4)">
+          <div class="mn" style="color:#fbbf24;">نحاس (Cu)</div>
+          <div class="mt">Copper</div>
+          <div class="md" style="color:#f59e0b;">مقاومة جيدة للتآكل</div>
+        </div>
+        <div class="mat-card" style="border-color:rgba(59,130,246,.4)">
+          <div class="mn" style="color:#60a5fa;">ألمنيوم (Al)</div>
+          <div class="mt">Aluminum Alloy</div>
+          <div class="md" style="color:#f59e0b;">خفيف ومقاوم نسبياً</div>
+        </div>
+      </div>
+      <div class="info-box">📏 حجم كل عينة: <strong>5cm × 3cm × 2mm</strong> — قِس السُمك في 5 نقاط وخذ المتوسط كـ T₀</div>
+    </div>
+
+    <div class="card red">
+      <div class="card-title red-t">⚗️ المحاليل الكيمياوية</div>
+      <table class="tbl">
+        <thead><tr><th>المحلول</th><th>التركيز</th><th>pH</th><th>الطبيعة</th><th>التوافر</th></tr></thead>
+        <tbody>
+          <tr><td>HCl — حمض الهيدروكلوريك</td><td>1M</td><td>~0</td><td style="color:#f87171;font-weight:700;">حمضي قوي</td><td>محل كيمياوي</td></tr>
+          <tr><td>NaCl — كلوريد الصوديوم</td><td>3.5%</td><td>~7</td><td style="color:#fbbf24;font-weight:700;">محايد</td><td>ملح الطعام + ماء مقطر</td></tr>
+          <tr><td>NaOH — هيدروكسيد الصوديوم</td><td>1M</td><td>~14</td><td style="color:#60a5fa;font-weight:700;">قاعدي قوي</td><td>محل كيمياوي</td></tr>
+          <tr><td>H₂O — ماء مقطر</td><td>100%</td><td>7</td><td style="color:#34d399;font-weight:700;">محايد (مرجع)</td><td>صيدلية</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="g2">
+      <div class="card purple">
+        <div class="card-title purple-t">🛡️ الطلاء الواقي</div>
+        <ul style="list-style:none;color:#d8b4fe;font-size:12px;line-height:2.3;">
+          <li>🟫 إيبوكسي (Epoxy) — الأقوى</li>
+          <li>🟠 دهان زيتي (Oil Paint)</li>
+          <li>⬜ زيت خروع (Castor Oil)</li>
+          <li>🔵 أكريليك (Acrylic)</li>
+        </ul>
+      </div>
+      <div class="card amber">
+        <div class="card-title amber-t">🔬 الأدوات</div>
+        <ul style="list-style:none;color:#94a3b8;font-size:12px;line-height:2.3;">
+          <li><span style="color:#10b981;">✓</span> Micrometer (متوفر لديك)</li>
+          <li><span style="color:#10b981;">✓</span> 12 كوب زجاجي</li>
+          <li><span style="color:#10b981;">✓</span> قفازات + نظارات واقية</li>
+          <li><span style="color:#10b981;">✓</span> دفتر تسجيل + كاميرا</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="wt">⚠️ تحذيرات السلامة المختبرية</div>
+      <p>
+        • الحمض والقاعدة مواد خطرة — ارتدِ القفازات والنظارات دائماً<br>
+        • اعمل في مكان جيد التهوية — لا تستنشق الأبخرة<br>
+        • لا تسكب المحاليل في البالوعة — خففها بالماء أولاً<br>
+        • عند ملامسة الجلد: اغسل فوراً بالماء 15 دقيقة
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 3 – STEPS
+  ══════════════════════════════════════ -->
+  <div id="tab-steps" class="section">
+
+    <div class="card amber">
+      <div class="card-title amber-t">📅 جدول سير التجربة — 5 أيام</div>
+      <table class="tbl">
+        <thead><tr><th>اليوم</th><th>النشاط</th><th>الوقت</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#f59e0b;font-weight:700;">اليوم 1</td><td>تحضير العينات، قياس T₀، تحضير المحاليل، بدء التغمير</td><td style="color:#10b981;">3-4h</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;">اليوم 2 (24h)</td><td>إخراج المجموعة الأولى، تنظيف، قياس T₂₄</td><td style="color:#10b981;">1-2h</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;">اليوم 3 (48h)</td><td>نفس الخطوات — قياس T₄₈</td><td style="color:#10b981;">1-2h</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;">اليوم 4 (72h)</td><td>نفس الخطوات — قياس T₇₂</td><td style="color:#10b981;">1-2h</td></tr>
+          <tr><td style="color:#f59e0b;font-weight:700;">اليوم 5</td><td>تجربة الطلاء الواقي + التحليل والتقرير</td><td style="color:#10b981;">3-4h</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card green">
+      <div class="card-title green-t">✅ الخطوات — اضغط لتعليم منجزة</div>
+      <div id="steps-list">
+        <div class="step" onclick="toggleStep(this,0)"><div class="step-num">1</div><div><h4>تحضير العينات المعدنية</h4><p>قُص كل معدن 5×3cm. صنفر بـ 400-grit. نظف بالكحول. رقّم كل عينة.</p></div></div>
+        <div class="step" onclick="toggleStep(this,1)"><div class="step-num">2</div><div><h4>القياس الأولي بالـ Micrometer — T₀</h4><p>قِس في 5 نقاط (4 زوايا + وسط). المتوسط = T₀. أهم خطوة — سجّل فوراً.</p></div></div>
+        <div class="step" onclick="toggleStep(this,2)"><div class="step-num">3</div><div><h4>تحضير المحاليل وغمر العينات</h4><p>12 كوب منفصل ومُعلَّم. سجّل وقت البدء. غطِّ الأكواب.</p></div></div>
+        <div class="step" onclick="toggleStep(this,3)"><div class="step-num">4</div><div><h4>القياس بعد 24h و48h و72h</h4><p>أخرج، نظف بماء مقطر، جفف. قِس نفس 5 نقاط. سجّل T₂₄، T₄₈، T₇₂.</p></div></div>
+        <div class="step" onclick="toggleStep(this,4)"><div class="step-num">5</div><div><h4>احسب معدل التآكل</h4><p>ΔT = T₀ − Tₙ ثم CR = (ΔT ÷ t) × 8760 mm/year</p></div></div>
+        <div class="step" onclick="toggleStep(this,5)"><div class="step-num">6</div><div><h4>تجربة الطلاء الواقي</h4><p>عينات حديد جديدة + طلاء مختلف لكل. انتظر 24h جفاف ثم HCl 72h.</p></div></div>
+        <div class="step" onclick="toggleStep(this,6)"><div class="step-num">7</div><div><h4>التحليل وكتابة التقرير</h4><p>رسوم بيانية، مقارنة المعادن والطلاءات، استنتاجات، تقرير نهائي.</p></div></div>
+      </div>
+      <div style="margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8;margin-bottom:6px;">
+          <span>التقدم</span>
+          <span id="prog-txt" style="color:#f59e0b;font-weight:700;">0 / 7</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong style="color:#f59e0b;">📏 كيف تقرأ الـ Micrometer:</strong><br>
+      ① Sleeve = mm كاملة &nbsp;②  خط إضافي أسفل = +0.5mm &nbsp;③ Thimble × 0.01mm<br>
+      <strong>مثال من دليلك: 5.00 + 0.88 = 5.88mm ✓</strong>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 4 – CALCULATOR
+  ══════════════════════════════════════ -->
+  <div id="tab-calc" class="section">
+    <div class="card amber">
+      <div class="card-title amber-t">🧮 حاسبة معدل التآكل</div>
+      <div class="formula" style="margin-bottom:16px;">
+        <div class="f">CR (mm/year) = (T₀ − Tₙ) ÷ t × 8760</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="inp-group">
+          <label>نوع المعدن</label>
+          <select id="c-metal">
+            <option value="fe">حديد (Fe)</option>
+            <option value="cu">نحاس (Cu)</option>
+            <option value="al">ألمنيوم (Al)</option>
+          </select>
+        </div>
+        <div class="inp-group">
+          <label>نوع المحلول</label>
+          <select id="c-sol">
+            <option value="hcl">HCl — حمضي</option>
+            <option value="nacl">NaCl — ملحي</option>
+            <option value="naoh">NaOH — قاعدي</option>
+            <option value="h2o">H₂O — مقطر</option>
+          </select>
+        </div>
+        <div class="inp-group">
+          <label>الطلاء</label>
+          <select id="c-coat">
+            <option value="none">لا يوجد</option>
+            <option value="epoxy">إيبوكسي</option>
+            <option value="oil">دهان زيتي</option>
+            <option value="acrylic">أكريليك</option>
+            <option value="castor">زيت خروع</option>
+          </select>
+        </div>
+        <div class="inp-group">
+          <label>السُمك الأولي T₀ (mm)</label>
+          <input type="number" id="c-t0" placeholder="مثال: 2.000" step="0.001">
+        </div>
+        <div class="inp-group">
+          <label>السُمك النهائي Tₙ (mm)</label>
+          <input type="number" id="c-tn" placeholder="مثال: 1.982" step="0.001">
+        </div>
+        <div class="inp-group">
+          <label>الزمن</label>
+          <select id="c-time">
+            <option value="24">24 ساعة</option>
+            <option value="48">48 ساعة</option>
+            <option value="72" selected>72 ساعة</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-amber" onclick="calcCR()">⚡ احسب</button>
+        <button class="btn-green" onclick="saveRow()">💾 حفظ</button>
+      </div>
+      <div id="calc-result" style="display:none;margin-top:16px;"></div>
+    </div>
+
+    <div class="card green">
+      <div class="card-title green-t">📋 البيانات المحفوظة</div>
+      <div id="saved-area">
+        <div id="no-data" style="text-align:center;color:#94a3b8;padding:24px 0;font-size:13px;">لا توجد بيانات — احسب واضغط حفظ</div>
+        <div id="saved-tbl" style="display:none;overflow-x:auto;">
+          <table class="tbl" style="min-width:500px;">
+            <thead><tr><th>المعدن</th><th>المحلول</th><th>الطلاء</th><th>T₀</th><th>Tₙ</th><th>CR (mm/yr)</th></tr></thead>
+            <tbody id="saved-body"></tbody>
+          </table>
+          <button class="btn-red" onclick="clearSaved()">🗑️ مسح الكل</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 5 – RESULTS
+  ══════════════════════════════════════ -->
+  <div id="tab-results" class="section">
+
+    <div class="card red">
+      <div class="card-title red-t">📊 جدول النتائج (أرقام توضيحية)</div>
+      <div style="overflow-x:auto;">
+        <table class="tbl" style="min-width:560px;">
+          <thead><tr><th>المعدن</th><th>المحلول</th><th>T₀</th><th>T₇₂</th><th>ΔT</th><th>CR (mm/yr)</th><th>التصنيف</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#f1f5f9;font-weight:600;">حديد</td><td>HCl</td><td>2.000</td><td>1.934</td><td>0.066</td><td style="color:#ef4444;font-weight:700;">8.03</td><td style="color:#ef4444;font-weight:700;">شديد جداً</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">حديد</td><td>NaCl</td><td>2.000</td><td>1.955</td><td>0.045</td><td style="color:#f97316;font-weight:700;">5.48</td><td style="color:#f97316;font-weight:700;">شديد</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">حديد</td><td>NaOH</td><td>2.000</td><td>1.982</td><td>0.018</td><td style="color:#fbbf24;font-weight:700;">2.19</td><td style="color:#fbbf24;font-weight:700;">متوسط</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">حديد</td><td>H₂O</td><td>2.000</td><td>1.991</td><td>0.009</td><td style="color:#10b981;font-weight:700;">1.10</td><td style="color:#10b981;font-weight:700;">خفيف</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">نحاس</td><td>HCl</td><td>2.000</td><td>1.974</td><td>0.026</td><td style="color:#fbbf24;font-weight:700;">3.16</td><td style="color:#fbbf24;font-weight:700;">متوسط</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">نحاس</td><td>NaCl</td><td>2.000</td><td>1.989</td><td>0.011</td><td style="color:#10b981;font-weight:700;">1.34</td><td style="color:#10b981;font-weight:700;">خفيف</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">ألمنيوم</td><td>HCl</td><td>2.000</td><td>1.961</td><td>0.039</td><td style="color:#f97316;font-weight:700;">4.75</td><td style="color:#f97316;font-weight:700;">شديد</td></tr>
+            <tr><td style="color:#f1f5f9;font-weight:600;">ألمنيوم</td><td>NaOH</td><td>2.000</td><td>1.958</td><td>0.042</td><td style="color:#f97316;font-weight:700;">5.11</td><td style="color:#f97316;font-weight:700;">شديد</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <div class="card-title blue-t">معايير التصنيف الدولي</div>
+      <div class="cls-grid">
+        <div class="cls-item" style="border-color:#10b981;background:rgba(16,185,129,.08)"><div class="cv" style="color:#10b981">خفيف</div><div class="cr" style="color:#10b981">&lt; 2 mm/yr</div><div class="cd">مقبول صناعياً</div></div>
+        <div class="cls-item" style="border-color:#fbbf24;background:rgba(251,191,36,.08)"><div class="cv" style="color:#fbbf24">متوسط</div><div class="cr" style="color:#fbbf24">2–5 mm/yr</div><div class="cd">يحتاج مراقبة</div></div>
+        <div class="cls-item" style="border-color:#f97316;background:rgba(249,115,22,.08)"><div class="cv" style="color:#f97316">شديد</div><div class="cr" style="color:#f97316">5–10 mm/yr</div><div class="cd">خطر</div></div>
+        <div class="cls-item" style="border-color:#ef4444;background:rgba(239,68,68,.08)"><div class="cv" style="color:#ef4444">شديد جداً</div><div class="cr" style="color:#ef4444">&gt;10 mm/yr</div><div class="cd">غير مقبول</div></div>
+      </div>
+    </div>
+
+    <div class="card green">
+      <div class="card-title green-t">🏆 الاستنتاجات</div>
+      <div class="concl-grid">
+        <div class="concl-item" style="border-color:rgba(239,68,68,.3)"><div class="ci" style="color:#ef4444">الحديد في HCl</div><div class="cr2">أعلى معدل تآكل — يجب تجنبه</div></div>
+        <div class="concl-item" style="border-color:rgba(245,158,11,.3)"><div class="ci" style="color:#f59e0b">النحاس</div><div class="cr2">أكثر مقاومة في معظم البيئات</div></div>
+        <div class="concl-item" style="border-color:rgba(249,115,22,.3)"><div class="ci" style="color:#f97316">الألمنيوم</div><div class="cr2">ضعيف أمام الحمض والقاعدة</div></div>
+        <div class="concl-item" style="border-color:rgba(16,185,129,.3)"><div class="ci" style="color:#10b981">الإيبوكسي</div><div class="cr2">أفضل طلاء واقٍ — يُوصى به</div></div>
+        <div class="concl-item" style="border-color:rgba(59,130,246,.3)"><div class="ci" style="color:#3b82f6">الماء المقطر</div><div class="cr2">أقل تأثير على جميع المعادن</div></div>
+        <div class="concl-item" style="border-color:rgba(239,68,68,.3)"><div class="ci" style="color:#ef4444">HCl</div><div class="cr2">أشد المحاليل تآكلاً</div></div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong style="color:#60a5fa;">🌍 التطبيق في الصناعة العراقية:</strong> أنابيب النفط والغاز — منشآت التكرير — شبكات المياه.<br>
+      خسائر التآكل عالمياً تصل إلى 4% من الناتج المحلي — هذا المشروع يقدم حلولاً فعلية.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 6 – REPORT
+  ══════════════════════════════════════ -->
+  <div id="tab-report" class="section">
+    <div class="g2">
+      <div>
+        <div class="rep-block"><h4>1. صفحة الغلاف (Title Page)</h4><p>اسم المشروع، أحمد بشار عقيل، المرحلة، المشرف، التاريخ.</p></div>
+        <div class="rep-block"><h4>2. الملخص التنفيذي (Abstract)</h4><p>150-200 كلمة: الهدف + المنهجية + أهم النتائج + التوصيات. تكتبها أخيراً.</p></div>
+        <div class="rep-block"><h4>3. المقدمة والأهداف</h4><p>أهمية التآكل، خسائر 4% من GDP عالمياً، أهداف مشروعك، الفرضيات.</p></div>
+        <div class="rep-block"><h4>4. المراجعة النظرية</h4><p>أنواع التآكل، آلية التآكل في المعادن، طرق الحماية، الدراسات السابقة.</p></div>
+        <div class="rep-block"><h4>5. المواد والطرق</h4><p>قائمة المواد، وصف الـ Micrometer وكيفية استخدامه، التصميم التجريبي.</p></div>
+      </div>
+      <div>
+        <div class="rep-block"><h4>6. النتائج (Results)</h4><p>جداول البيانات، الحسابات، الرسوم البيانية، صور قبل وبعد.</p></div>
+        <div class="rep-block"><h4>7. المناقشة والتحليل</h4><p>تفسير النتائج كيمياوياً، مقارنة مع الأدبيات العلمية.</p></div>
+        <div class="rep-block"><h4>8. الاستنتاجات والتوصيات</h4><p>أفضل معدن لكل بيئة، أفضل طلاء، تطبيقات في النفط العراقي.</p></div>
+        <div class="rep-block"><h4>9. المراجع (References)</h4><p>تنسيق APA أو IEEE — Google Scholar: corrosion rate steel HCl</p></div>
+      </div>
+    </div>
+
+    <div class="card green" style="margin-top:14px;">
+      <div class="card-title green-t">💡 نصائح ذهبية</div>
+      <ul style="list-style:none;color:#94a3b8;font-size:12px;line-height:2.3;">
+        <li>📸 التقط صور واضحة قبل وبعد — الدليل البصري يقوي التقرير</li>
+        <li>📈 ارسم في Excel — رسم واحد يساوي ألف كلمة</li>
+        <li>🔁 كرر كل تجربة 3 مرات (Triplicates) للموثوقية</li>
+        <li>🌍 اربط بصناعة النفط العراقية — يزيد أهمية المشروع</li>
+        <li>📐 سجّل قراءات الـ Micrometer فور أخذها</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<div class="footer">
+  🔬 مشروع دراسة التآكل &nbsp;|&nbsp; هندسة كيمياوية &nbsp;|&nbsp; إعداد: أحمد بشار عقيل
+</div>
+
+<script>
+/* ── TABS ─────────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── BAR CHART ────────────────────────── */
+(function buildChart() {
+  const data = [
+    { label:'حديد\nHCl',      val:8.03, clr:'#ef4444' },
+    { label:'حديد\nNaCl',     val:5.48, clr:'#f97316' },
+    { label:'حديد\nNaOH',     val:2.19, clr:'#fbbf24' },
+    { label:'نحاس\nHCl',      val:3.16, clr:'#fbbf24' },
+    { label:'نحاس\nNaCl',     val:1.34, clr:'#10b981' },
+    { label:'ألمنيوم\nHCl',   val:4.75, clr:'#f97316' },
+    { label:'ألمنيوم\nNaOH',  val:5.11, clr:'#f97316' },
+  ];
+  const max = 10, h = 120;
+  const bc = document.getElementById('barchart');
+  data.forEach(d => {
+    const bh = Math.round((d.val / max) * h);
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    col.innerHTML =
+      `<span class="bv" style="color:${d.clr}">${d.val}</span>` +
+      `<div class="bar-rect" style="height:${bh}px;background:${d.clr}"></div>` +
+      `<span class="bl">${d.label}</span>`;
+    bc.appendChild(col);
+  });
+})();
+
+/* ── STEPS ────────────────────────────── */
+let doneMask = {};
+function toggleStep(el, i) {
+  doneMask[i] = !doneMask[i];
+  el.classList.toggle('done', doneMask[i]);
+  const n = Object.values(doneMask).filter(Boolean).length;
+  const total = 7;
+  document.getElementById('prog-txt').textContent = n + ' / ' + total;
+  document.getElementById('prog-fill').style.width = (n / total * 100) + '%';
+}
+
+/* ── CALCULATOR ───────────────────────── */
+let lastResult = null;
+
+function calcCR() {
+  const t0 = parseFloat(document.getElementById('c-t0').value);
+  const tn = parseFloat(document.getElementById('c-tn').value);
+  const t  = parseFloat(document.getElementById('c-time').value);
+  if (isNaN(t0) || isNaN(tn)) { alert('أدخل قيم السُمك أولاً'); return; }
+  if (tn > t0) { alert('السُمك النهائي لا يمكن أن يكون أكبر من الأولي!'); return; }
+  const delta = (t0 - tn).toFixed(3);
+  const cr    = ((t0 - tn) / t * 8760).toFixed(2);
+  let cls, clr, rec;
+  const v = parseFloat(cr);
+  if      (v < 2)  { cls='🟢 خفيف — مقبول صناعياً';      clr='#10b981'; rec='المعدن مناسب بدون حماية إضافية'; }
+  else if (v < 5)  { cls='🟡 متوسط — يحتاج مراقبة';       clr='#fbbf24'; rec='يُنصح باستخدام طلاء واقٍ'; }
+  else if (v < 10) { cls='🟠 شديد — خطر';                  clr='#f97316'; rec='غيّر المعدن أو استخدم إيبوكسي'; }
+  else             { cls='🔴 شديد جداً — غير مقبول';       clr='#ef4444'; rec='لا يُستخدم في هذه البيئة إطلاقاً'; }
+  lastResult = { delta, cr, cls, clr, rec };
+  const box = document.getElementById('calc-result');
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div style="color:#f59e0b;font-weight:700;margin-bottom:10px;">📊 النتائج:</div>
+    ${row('فقدان السُمك ΔT', delta + ' mm', '#f1f5f9')}
+    ${row('معدل التآكل السنوي', cr + ' mm/year', clr)}
+    ${row('التصنيف', cls, clr)}
+    ${row('التوصية', rec, '#94a3b8')}
+  `;
+}
+
+function row(l, v, c) {
+  return `<div class="res-row"><span class="rl">${l}</span><span class="rv" style="color:${c}">${v}</span></div>`;
+}
+
+/* ── SAVE ─────────────────────────────── */
+const metals  = { fe:'حديد', cu:'نحاس', al:'ألمنيوم' };
+const sols    = { hcl:'HCl', nacl:'NaCl', naoh:'NaOH', h2o:'H₂O' };
+const coatings= { none:'لا يوجد', epoxy:'إيبوكسي', oil:'زيتي', acrylic:'أكريليك', castor:'زيت خروع' };
+
+function saveRow() {
+  if (!lastResult) { alert('احسب أولاً!'); return; }
+  const m  = metals[document.getElementById('c-metal').value];
+  const s  = sols[document.getElementById('c-sol').value];
+  const co = coatings[document.getElementById('c-coat').value];
+  const t0 = document.getElementById('c-t0').value;
+  const tn = document.getElementById('c-tn').value;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${m}</td><td>${s}</td><td>${co}</td><td>${t0}</td><td>${tn}</td>
+    <td style="color:${lastResult.clr};font-weight:700">${lastResult.cr}</td>`;
+  document.getElementById('saved-body').appendChild(tr);
+  document.getElementById('no-data').style.display  = 'none';
+  document.getElementById('saved-tbl').style.display = 'block';
+}
+
+function clearSaved() {
+  if (!confirm('مسح كل البيانات؟')) return;
+  document.getElementById('saved-body').innerHTML = '';
+  document.getElementById('no-data').style.display  = 'block';
+  document.getElementById('saved-tbl').style.display = 'none';
+}
+</script>
+</body>
+</html>
